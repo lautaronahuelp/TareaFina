@@ -23,7 +23,7 @@ class TareaFina(models.Model):
     meta = models.ForeignKey(Tarea, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     order = models.SmallIntegerField()
-    satisfaction = models.ForeignKey(Reaccion, on_delete=models.CASCADE)
+    satisfaction = models.ForeignKey(Reaccion, blank=True, null=True, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
     completed_date = models.DateTimeField(blank=True, null=True)
 

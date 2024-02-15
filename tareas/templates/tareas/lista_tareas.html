@@ -1,5 +1,11 @@
 {% extends 'tareas/base.html' %}
 
 {% block content %}
-    <h1>Tu lista de tareas:</h1>
+    <h1>Tareas pendientes:</h1>
+    {% for tarea in lista %}
+        <h3>{{ tarea.description }}</h3>
+        <p>Deadline: {{ tarea.deadline_date }}</p>
+    {% endfor %}
+    <hr>
+    <h1>Tareas completas:</h1>
 {% endblock %}
