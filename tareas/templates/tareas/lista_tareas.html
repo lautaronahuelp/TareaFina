@@ -3,7 +3,7 @@
 {% block content %}
     <h1>Tareas pendientes:</h1>
     {% for tarea in lista %}
-        <h3>{{ tarea.description }}</h3>
+        <a href="{% url 'tarea_fina' tarea.pk %}"><h3>{{ tarea.description }}</h3></a>
         <p>Deadline: {{ tarea.deadline_date }}</p>
     {% endfor %}
     <hr>

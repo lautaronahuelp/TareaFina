@@ -1,0 +1,18 @@
+{% extends 'tareas/base.html' %}
+
+{% block content %}
+    <h1>{{ tarea.description }}</h1>
+    <p>Deadline: {{ tarea.deadline_date }}</p>
+    <p>{{ tarea.act_completas }}/{{ tarea.act_total }} actividades completas.</p>
+    <ol>
+    {% for act in actividades %}
+    {% if act.completed_date == None %}
+        <li>{{ act.description }}<a href="{% url 'act_completa' tarea.pk act.pk %}"><span class="glyphicon glyphicon-ok"></span></a></span><span class="glyphicon glyphicon-pencil"></span></li>
+    {% else %}
+        <li><del>{{ act.description }}</del></li>
+    {% endif %}
+    {% endfor %}
+        <li><a href="{% url 'act_agregar' tarea.pk %}"><span class="glyphicon glyphicon-plus"></span></a></li>
+    </ol>
+    
+{% endblock %}
