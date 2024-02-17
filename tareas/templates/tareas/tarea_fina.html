@@ -1,18 +1,18 @@
 {% extends 'tareas/base.html' %}
 
 {% block content %}
+    <a href="{% url 'lista_tareas' %}"><i class="bi bi-arrow-left-circle"></i></a>
     <h1>{{ tarea.description }}</h1>
     <p>Deadline: {{ tarea.deadline_date }}</p>
     <p>{{ tarea.act_completas }}/{{ tarea.act_total }} actividades completas.</p>
     <ol>
     {% for act in actividades %}
     {% if act.completed_date == None %}
-        <li>{{ act.description }}<a href="{% url 'act_completa' tarea.pk act.pk %}"><span class="glyphicon glyphicon-ok"></span></a></span><span class="glyphicon glyphicon-pencil"></span></li>
+        <li>{{ act.description }}<a href="{% url 'act_completa' tarea.pk act.pk %}"><i class="bi bi-check-square"></i></a></span><i class="bi bi-pencil-square"></i></li>
     {% else %}
-        <li><del>{{ act.description }}</del></li>
+        <li><del>{{ act.description }}</del>&#128513;</li>
     {% endif %}
     {% endfor %}
-        <li><a href="{% url 'act_agregar' tarea.pk %}"><span class="glyphicon glyphicon-plus"></span></a></li>
     </ol>
-    
+    <a href="{% url 'act_agregar' tarea.pk %}"><i class="bi bi-plus-circle-fill"></i></a>
 {% endblock %}

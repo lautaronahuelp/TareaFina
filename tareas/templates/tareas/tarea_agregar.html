@@ -1,0 +1,12 @@
+{% extends 'tareas/base.html' %}
+
+{% block content %}
+<a href="{% url 'lista_tareas' %}"><i class="bi bi-arrow-left-circle"></i></a>
+<h1>Lista de tareas</h1>
+<h2>Nueva tarea:</h2>
+<form method="POST" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Agregar">
+</form>
+{% endblock %}

@@ -3,9 +3,10 @@
 {% block content %}
     <h1>Tareas pendientes:</h1>
     {% for tarea in lista %}
-        <a href="{% url 'tarea_fina' tarea.pk %}"><h3>{{ tarea.description }}</h3></a>
+        <a href="{% url 'tarea_fina' tarea.pk %}"><h3>{{ tarea.description }}<span class="badge bg-primary">{{ tarea.act_completas }}/{{ tarea.act_total }}</span></h3></a>
         <p>Deadline: {{ tarea.deadline_date }}</p>
     {% endfor %}
+    <a href="{% url 'tarea_agregar' %}"><i class="bi bi-plus-circle-fill"></i></a>
     <hr>
     <h1>Tareas completas:</h1>
 {% endblock %}
