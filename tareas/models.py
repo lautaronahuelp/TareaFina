@@ -2,9 +2,19 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+class Categoria(models.Model):
+    description = models.CharField(max_length=50)
+    icon = models.CharField(max_length=50)
+    color = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.description
+
+
 class Tarea(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
+    category = models.ForeignKey(Categoria, on_delete=models.CASCADE, null=True, default=None)
     sensation = models.CharField(max_length=255, blank=True, null=True)
     created_date = models.DateTimeField(default=timezone.now)
     deadline_date = models.DateTimeField(blank=True, null=True)
