@@ -4,6 +4,7 @@
     <h1>Tareas pendientes:</h1>
     {% for tarea in lista %}
         <a href="{% url 'tarea_fina' tarea.pk %}"><h3>{{ tarea.description }}<span class="badge bg-primary">{{ tarea.act_completas }}/{{ tarea.act_total }}</span></h3></a>
+        <i class="bi bi-{{tarea.category.icon}}" style="color: #{{tarea.category.color}};">{{tarea.category.description}}</i>
         <p>Deadline: {{ tarea.deadline_date }}</p>
     {% endfor %}
     <a href="{% url 'tarea_agregar' %}"><i class="bi bi-plus-circle-fill"></i></a>

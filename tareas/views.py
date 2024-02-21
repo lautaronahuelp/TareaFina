@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Tarea, Actividad
-from .forms import ActividadForm, TareaForm
+from .models import Tarea, Actividad, Categoria
+from .forms import ActividadForm, TareaForm, SelCategoriaForm
 
 @login_required
 def lista_tareas(request):
@@ -44,7 +44,31 @@ def tarea_agregar(request):
             tarea = form.save(commit=False)
             tarea.author = request.user
             tarea.save()
-            return redirect('lista_tareas')
+            #return redirect('lista_tareas')
+            return redirect('tarea_agregar_cat', pk_t=tarea.pk)
     else:
         form = TareaForm()
     return render(request, 'tareas/tarea_agregar.html', {'form': form,})
+
+@login_required
+def tarea_agregar_cat(request, pk_t):
+    tarea = get_object_or_404(Tarea, pk=pk_t)
+    if request.method == 'POST':
+        form = SelCategoriaForm(request.POST, instance=tarea)
+        form.fields['category'].queryset = Categoria.objects.filter(author = request.user) | Categoria.objects.filter(author = 1)
+        if form.is_valid():
+            tarea = form.save()
+            return redirect('lista_tareas')
+    else:
+        form = SelCategoriaForm(instance=tarea)
+        form.fields['category'].queryset = Categoria.objects.filter(author = request.user) | Categoria.objects.filter(author = 1)
+    return render(request, 'tareas/seleccionar_cat.html', {'form': form})
+
+@login_required
+def tarea_crear_cat(request, pk_t):
+    tarea = get_object_or_404(Tarea, pk=pk_t)
+    if request.method == 'POST':
+        form = CategoriaForm(request.POST)
+    else:
+        form = CategoriaForm()
+    return render(request, 'tareas/crear_cat.html', {'form': form, 'tarea': tarea,})

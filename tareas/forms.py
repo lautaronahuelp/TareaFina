@@ -1,5 +1,5 @@
 from django import forms
-from .models import Tarea, Actividad
+from .models import Tarea, Actividad, Categoria
 
 class DateTimeLocalInput(forms.DateTimeInput):
     input_type = "datetime-local"
@@ -33,3 +33,16 @@ class ActividadForm(forms.ModelForm):
     class Meta:
         model = Actividad
         fields = ('description',)
+
+class SelCategoriaForm(forms.ModelForm):
+    category = forms.ModelChoiceField(queryset=Categoria.objects.none())###LE PASO EL QUERYSET EN LA VIEW 
+
+    class Meta:
+        model = Tarea
+        fields = ('category',)
+
+class CategoriaForm(forms.ModelForm):
+
+    class Meta:
+        model = Categoria
+        fields = ('description', 'icon', 'color',)
