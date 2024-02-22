@@ -2,6 +2,21 @@
 
 {% block content %}
     <h1>Tareas pendientes:</h1>
+    <label for="categoria">Categoría:</label>
+    <select name="categoria" id="categoria" onchange="location = this.value;">
+        {% if cat_pk == 0  %}
+            <option value="{% url 'lista_tareas' %}" selected>Todas</option>
+        {% else %}
+            <option value="{% url 'lista_tareas' %}">Todas</option>
+        {% endif %}
+        {% for categoria in categorias %}
+            {% if cat_pk == categoria.pk  %}
+                <option value="{% url 'lista_tareas_xcat' categoria.normalized %}" selected>{{ categoria.description }}</option>
+            {% else %}
+                <option value="{% url 'lista_tareas_xcat' categoria.normalized %}">{{ categoria.description }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
     {% for tarea in lista %}
         <a href="{% url 'tarea_fina' tarea.pk %}"><h3>{{ tarea.description }}<span class="badge bg-primary">{{ tarea.act_completas }}/{{ tarea.act_total }}</span></h3></a>
         <i class="bi bi-{{tarea.category.icon}}" style="color: #{{tarea.category.color}};">{{tarea.category.description}}</i>

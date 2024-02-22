@@ -4,6 +4,7 @@ from django.utils import timezone
 
 class Categoria(models.Model):
     description = models.CharField(max_length=50)
+    normalized = models.CharField(max_length=50)
     icon = models.CharField(max_length=50)
     color = models.CharField(max_length=6, default='000000')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)

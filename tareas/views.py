@@ -1,12 +1,21 @@
+import unicodedata
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Tarea, Actividad, Categoria
 from .forms import ActividadForm, TareaForm, SelCategoriaForm
 
 @login_required
-def lista_tareas(request):
-    lista = Tarea.objects.filter(author = request.user).order_by('-created_date')
-    return render(request, 'tareas/lista_tareas.html', {'lista': lista})
+def lista_tareas(request, category = None):
+    list_category = Categoria.objects.filter(author = request.user) | Categoria.objects.filter(author = 1)
+    if category:
+        category = unicodedata.normalize("NFKD", category).encode("ascii","ignore").decode("ascii").lower()
+        category = get_object_or_404(Categoria, normalized = category)
+        cat_pk = category.pk
+        lista = Tarea.objects.filter(author = request.user, category = category.pk).order_by('-created_date')
+    else:
+        lista = Tarea.objects.filter(author = request.user).order_by('-created_date')
+        cat_pk = 0
+    return render(request, 'tareas/lista_tareas.html', {'lista': lista, 'categorias': list_category, 'cat_pk':cat_pk})
 
 @login_required
 def tarea_fina(request, pk):
