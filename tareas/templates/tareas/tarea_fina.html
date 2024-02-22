@@ -1,8 +1,7 @@
 {% extends 'tareas/base.html' %}
 
 {% block content %}
-    <a href="{% url 'lista_tareas' %}"><i class="bi bi-arrow-left-circle"></i></a>
-    <h1>{{ tarea.description }}</h1>
+    <h1><a href="{% url 'lista_tareas' %}"><i class="bi bi-arrow-left-circle"></i></a>{{ tarea.description }}<a href="{% url 'tarea_editar' tarea.pk %}"><i class="bi bi-pencil-square"></i></a></h1>
     <p>Deadline: {{ tarea.deadline_date }}</p>
     <p>{{ tarea.act_completas }}/{{ tarea.act_total }} actividades completas.</p>
     <ol>

@@ -60,18 +60,31 @@ def tarea_agregar(request):
     return render(request, 'tareas/tarea_agregar.html', {'form': form,})
 
 @login_required
+def tarea_editar(request, pk):
+    tarea = get_object_or_404(Tarea, pk=pk)
+    if request.method == 'POST':
+        form = TareaForm(request.POST, instance = tarea)
+        if form.is_valid():
+            form.save()
+            return redirect('tarea_agregar_cat', pk_t=tarea.pk)
+    else:
+        form = TareaForm(instance = tarea)
+    return render(request, 'tareas/tarea_editar.html', {'form': form, 'tarea':tarea})
+
+
+@login_required
 def tarea_agregar_cat(request, pk_t):
     tarea = get_object_or_404(Tarea, pk=pk_t)
     if request.method == 'POST':
         form = SelCategoriaForm(request.POST, instance=tarea)
         form.fields['category'].queryset = Categoria.objects.filter(author = request.user) | Categoria.objects.filter(author = 1)
         if form.is_valid():
-            tarea = form.save()
+            form.save()
             return redirect('lista_tareas')
     else:
         form = SelCategoriaForm(instance=tarea)
         form.fields['category'].queryset = Categoria.objects.filter(author = request.user) | Categoria.objects.filter(author = 1)
-    return render(request, 'tareas/seleccionar_cat.html', {'form': form})
+    return render(request, 'tareas/seleccionar_cat.html', {'form': form, 'tarea':tarea})
 
 @login_required
 def tarea_crear_cat(request, pk_t):
