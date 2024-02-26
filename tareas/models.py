@@ -2,11 +2,25 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+class Color(models.Model):
+    description = models.CharField(max_length=50)
+    hex_color = models.CharField(max_length=6, default='000000')
+
+    def __str__(self):
+        return self.description
+
+class Icono(models.Model):
+    description = models.CharField(max_length=100)
+    class_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.description
+
 class Categoria(models.Model):
     description = models.CharField(max_length=50)
     normalized = models.CharField(max_length=50)
-    icon = models.CharField(max_length=50)
-    color = models.CharField(max_length=6, default='000000')
+    icon = models.ForeignKey(Icono, on_delete=models.CASCADE, null=True, default=None)
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, null=True, default=None)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=1)
 
     def __str__(self):
@@ -26,16 +40,21 @@ class Tarea(models.Model):
 
     def __str__(self):
         return self.description
-
-    def completar_act(self):
-        if(self.act_completas < self.act_total):
-            self.act_completas += 1
-            self.save()
     
     def agregar_act(self):
         if(self.completed_date == None):
             self.act_total += 1
             self.save()
+
+    def completar_act(self):
+        if(self.act_completas < self.act_total):
+            self.act_completas += 1
+            if(self.act_completas == self.act_total):
+                self.completed_date = timezone.now()
+            self.save()
+    
+    def estaCompleta(self):
+        return self.completed_date != None
 
 class Reaccion(models.Model):
     description = models.CharField(max_length=100)

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Tarea, Actividad, Categoria
+from .models import Tarea, Actividad, Categoria, Icono
 
 class DateTimeLocalInput(forms.DateTimeInput):
     input_type = "datetime-local"
@@ -18,6 +18,12 @@ class DateTimeLocalField(forms.DateTimeField):
     ]
     widget = DateTimeLocalInput(format="%Y-%m-%dT%H:%M")
 
+class RadioSelectLocalInput(forms.RadioSelect):
+    pass
+
+class RadioChoiceLocalField(forms.ModelChoiceField):
+    #widget = RadioSelectLocalInput()
+    pass
 
 class TareaForm(forms.ModelForm):
     deadline_date = DateTimeLocalField()
@@ -40,7 +46,7 @@ class SelCategoriaForm(forms.ModelForm):
         fields = ('category',)
 
 class CategoriaForm(forms.ModelForm):
-
+    icon = RadioChoiceLocalField(queryset=Icono.objects.none())
     class Meta:
         model = Categoria
-        fields = ('description', 'icon', 'color',)
+        fields = ('description', 'icon', 'color')

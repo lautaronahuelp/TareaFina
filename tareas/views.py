@@ -1,8 +1,8 @@
 import unicodedata
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Tarea, Actividad, Categoria
-from .forms import ActividadForm, TareaForm, SelCategoriaForm
+from .models import Tarea, Actividad, Categoria, Icono
+from .forms import ActividadForm, TareaForm, SelCategoriaForm, CategoriaForm
 
 @login_required
 def lista_tareas(request, category = None):
@@ -91,6 +91,8 @@ def tarea_crear_cat(request, pk_t):
     tarea = get_object_or_404(Tarea, pk=pk_t)
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
+        form.fields['icon'].queryset = Icono.objects.all()
     else:
         form = CategoriaForm()
+        form.fields['icon'].queryset = Icono.objects.all()
     return render(request, 'tareas/crear_cat.html', {'form': form, 'tarea': tarea,})

@@ -1,6 +1,8 @@
 {% extends 'tareas/base.html' %}
 
 {% block content %}
+    <div class="row">
+    <div class="col-12 col-md-6">
     <h1>Tareas pendientes:</h1>
     <label for="categoria">Categoría:</label>
     <select name="categoria" id="categoria" onchange="location = this.value;">
@@ -18,11 +20,35 @@
         {% endfor %}
     </select>
     {% for tarea in lista %}
+    {% if not tarea.estaCompleta %}
         <a href="{% url 'tarea_fina' tarea.pk %}"><h3>{{ tarea.description }}<span class="badge bg-primary">{{ tarea.act_completas }}/{{ tarea.act_total }}</span></h3></a>
-        <i class="bi bi-{{tarea.category.icon}}" style="color: #{{tarea.category.color}};">{{tarea.category.description}}</i>
+        <i class="bi bi-{{tarea.category.icon.class_name}}" style="color: #{{tarea.category.color.hex_color}};">{{tarea.category.description}}</i>
         <p>Deadline: {{ tarea.deadline_date }}</p>
+    {% endif %}
     {% endfor %}
-    <a href="{% url 'tarea_agregar' %}"><i class="bi bi-plus-circle-fill"></i></a>
-    <hr>
+    <div class="text-center">
+        <a href="{% url 'tarea_agregar' %}"><i class="h1 bi bi-plus-circle-fill"></i></a>
+    </div>
+    </div>
+    <div class="col">
     <h1>Tareas completas:</h1>
+    {% for tarea in lista %}
+    {% if tarea.estaCompleta %}
+        <a href="{% url 'tarea_fina' tarea.pk %}"><h3>{{ tarea.description }}<span class="badge bg-primary">{{ tarea.act_completas }}/{{ tarea.act_total }}</span></h3></a>
+        <i class="bi bi-{{tarea.category.icon.class_name}}" style="color: #{{tarea.category.color.hex_color}};">{{tarea.category.description}}</i>
+        <p>Deadline: {{ tarea.deadline_date }}</p>
+    {% endif %}
+    {% endfor %}
+    </div>
+    </div>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Dropdown button
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#"><i class="bi bi-house"></i>Action</a></li>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-book"></i>Another action</a></li>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-hospital"></i>Something else here</a></li>
+        </ul>
+    </div>
 {% endblock %}
