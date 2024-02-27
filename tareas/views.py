@@ -1,4 +1,5 @@
 import unicodedata
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Tarea, Actividad, Categoria, Icono
@@ -89,10 +90,28 @@ def tarea_agregar_cat(request, pk_t):
 @login_required
 def tarea_crear_cat(request, pk_t):
     tarea = get_object_or_404(Tarea, pk=pk_t)
+    iconos = Icono.objects.all()
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
-        form.fields['icon'].queryset = Icono.objects.all()
+        norm_description = unicodedata.normalize("NFKD", request.POST['description']).encode("ascii","ignore").decode("ascii").lower()
+        check = Categoria.objects.filter(Q(normalized=norm_description) & Q(author=request.user)) | Categoria.objects.filter(Q(normalized=norm_description) & Q(author=1))
+        if check.count() == 0:
+            form.fields['icon'].required = False
+            if form.is_valid():
+                form = form.save(commit=False)
+                form.icon = get_object_or_404(Icono, class_name=request.POST['icon_class'])
+                form.normalized = norm_description
+                form = form.save()
+                tareaForm = TareaForm(instance=tarea)
+                tareaForm = tareaForm.save(commit=False)
+                tareaForm.category = Categoria.objects.get(normalized=norm_description)
+                tareaForm.save()
+                return redirect('lista_tareas')
+        error_desc = 'El nombre esta en uso, elija otro.'
+        icon_selecc = request.POST['icon_class']
     else:
+        error_desc = ''
+        icon_selecc = ''
         form = CategoriaForm()
-        form.fields['icon'].queryset = Icono.objects.all()
-    return render(request, 'tareas/crear_cat.html', {'form': form, 'tarea': tarea,})
+     
+    return render(request, 'tareas/crear_cat.html', {'form': form, 'tarea': tarea, 'iconos': iconos, 'error_desc': error_desc, 'icon_selecc':icon_selecc})

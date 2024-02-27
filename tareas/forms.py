@@ -18,6 +18,9 @@ class DateTimeLocalField(forms.DateTimeField):
     ]
     widget = DateTimeLocalInput(format="%Y-%m-%dT%H:%M")
 
+class HiddenChoiceLocalInput(forms.TextInput):
+    input_type = "hidden"
+
 class RadioSelectLocalInput(forms.RadioSelect):
     pass
 
@@ -46,7 +49,7 @@ class SelCategoriaForm(forms.ModelForm):
         fields = ('category',)
 
 class CategoriaForm(forms.ModelForm):
-    icon = RadioChoiceLocalField(queryset=Icono.objects.none())
+    icon_class = forms.CharField(widget=HiddenChoiceLocalInput)
     class Meta:
         model = Categoria
-        fields = ('description', 'icon', 'color')
+        fields = ('description', 'icon', 'icon_class', 'color',)

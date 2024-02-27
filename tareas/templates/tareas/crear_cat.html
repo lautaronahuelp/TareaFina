@@ -5,7 +5,40 @@
 <h2>Nueva categoria:</h2>
 <form method="POST" action="">
     {% csrf_token %}
-    {{ form.as_p }}
+    <p>{{ error_desc }}</p>
+    <p>{{ form.description.label_tag }}
+    {{ form.description.errors }}
+    {{ form.description }}
+    {{ form.description.help_text }}</p>
+    <p>{{ form.color.label_tag }}
+    {{ form.color.errors }}
+    {{ form.color }}
+    {{ form.color.help_text }}</p>
+    {{ form.icon_class.errors }}
+    {{ form.icon_class }}
+    <p>
+    <div class="dropdown">
+        <button id="id_icon_button" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Seleccione icono
+        </button>
+        <ul class="dropdown-menu" style="height: 50px; overflow: auto;">
+        {% for opcion in iconos %}
+            <li><a class="dropdown-item" href="javascript:void(0);" onclick="selectIcon('{{opcion.class_name}}')"><i class="bi bi-{{opcion.class_name}}"></i>{{opcion}}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+    </p>
     <input type="submit" value="Agregar">
 </form>
+{{ check }}
+<script>
+    if('{{icon_selecc}}' != ''){
+        document.getElementById("id_icon_class").value = '{{icon_selecc}}';
+        document.getElementById("id_icon_button").innerHTML = '<i class="bi bi-{{icon_selecc}}"></i>{{icon_selecc}}';
+    }
+    function selectIcon(iconClass) {
+        document.getElementById("id_icon_class").value = iconClass;
+        document.getElementById("id_icon_button").innerHTML = '<i class="bi bi-'+iconClass+'"></i>'+iconClass;
+    }
+</script>
 {% endblock %}

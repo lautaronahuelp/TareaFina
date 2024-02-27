@@ -8,5 +8,5 @@
     {{ form.as_p }}
     <input type="submit" value="Asignar">
 </form>
-<h2>O cree una nueva.</h2>
+<h2>O <a href="{% url 'tarea_crear_cat' tarea.pk %}">cree una nueva.</a></h2>
 {% endblock %}
