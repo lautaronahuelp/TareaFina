@@ -13,5 +13,7 @@
     {% endif %}
     {% endfor %}
     </ol>
+    {% if tarea.completed_date == None %}
     <a href="{% url 'act_agregar' tarea.pk %}"><i class="bi bi-plus-circle-fill"></i></a>
+    {% endif %}
 {% endblock %}

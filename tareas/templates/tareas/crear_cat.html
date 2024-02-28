@@ -14,10 +14,10 @@
     {{ form.color.errors }}
     {{ form.color }}
     {{ form.color.help_text }}</p>
-    {{ form.icon_class.errors }}
-    {{ form.icon_class }}
     <p>
     <div class="dropdown">
+        <p>{{ error_icon }}</p>
+        Icon: 
         <button id="id_icon_button" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           Seleccione icono
         </button>
@@ -28,17 +28,20 @@
         </ul>
     </div>
     </p>
+    {{ form.icon_class.errors }}
+    {{ form.icon_class }}
     <input type="submit" value="Agregar">
 </form>
 {{ check }}
 <script>
-    if('{{icon_selecc}}' != ''){
-        document.getElementById("id_icon_class").value = '{{icon_selecc}}';
-        document.getElementById("id_icon_button").innerHTML = '<i class="bi bi-{{icon_selecc}}"></i>{{icon_selecc}}';
-    }
+    var id_icon_class = document.getElementById("id_icon_class")
+    var id_icon_button = document.getElementById("id_icon_button")
+
+    if('{{icon_selecc}}' != '') selectIcon('{{icon_selecc}}');
+
     function selectIcon(iconClass) {
-        document.getElementById("id_icon_class").value = iconClass;
-        document.getElementById("id_icon_button").innerHTML = '<i class="bi bi-'+iconClass+'"></i>'+iconClass;
+        id_icon_class.value = iconClass;
+        id_icon_button.innerHTML = '<i class="bi bi-'+iconClass+'"></i>'+iconClass;
     }
 </script>
 {% endblock %}

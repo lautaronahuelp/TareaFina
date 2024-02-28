@@ -89,15 +89,27 @@ def tarea_agregar_cat(request, pk_t):
 
 @login_required
 def tarea_crear_cat(request, pk_t):
+    error_desc = ''
+    error_icon = ''
+    icon_selecc = ''
     tarea = get_object_or_404(Tarea, pk=pk_t)
     iconos = Icono.objects.all()
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
         norm_description = unicodedata.normalize("NFKD", request.POST['description']).encode("ascii","ignore").decode("ascii").lower()
         check = Categoria.objects.filter(Q(normalized=norm_description) & Q(author=request.user)) | Categoria.objects.filter(Q(normalized=norm_description) & Q(author=1))
+        icon = Icono.objects.filter(class_name=request.POST['icon_class'])
+
+        icon_selecc = request.POST['icon_class']
+
+        #errores
+        if icon.count() == 0:
+            error_icon = 'Icono no válido, seleccione uno de la lista.'
+            icon_selecc = ''
+
         if check.count() == 0:
             form.fields['icon'].required = False
-            if form.is_valid():
+            if form.is_valid() and icon.count() != 0:
                 form = form.save(commit=False)
                 form.icon = get_object_or_404(Icono, class_name=request.POST['icon_class'])
                 form.normalized = norm_description
@@ -107,11 +119,9 @@ def tarea_crear_cat(request, pk_t):
                 tareaForm.category = Categoria.objects.get(normalized=norm_description)
                 tareaForm.save()
                 return redirect('lista_tareas')
-        error_desc = 'El nombre esta en uso, elija otro.'
-        icon_selecc = request.POST['icon_class']
+        else:
+            error_desc = 'El nombre esta en uso, elija otro.'
     else:
-        error_desc = ''
-        icon_selecc = ''
         form = CategoriaForm()
      
-    return render(request, 'tareas/crear_cat.html', {'form': form, 'tarea': tarea, 'iconos': iconos, 'error_desc': error_desc, 'icon_selecc':icon_selecc})
+    return render(request, 'tareas/crear_cat.html', {'form': form, 'tarea': tarea, 'iconos': iconos, 'error_icon': error_icon, 'error_desc': error_desc, 'icon_selecc':icon_selecc})
