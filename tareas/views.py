@@ -125,3 +125,16 @@ def tarea_crear_cat(request, pk_t):
         form = CategoriaForm()
      
     return render(request, 'tareas/crear_cat.html', {'form': form, 'tarea': tarea, 'iconos': iconos, 'error_icon': error_icon, 'error_desc': error_desc, 'icon_selecc':icon_selecc})
+
+@login_required
+def tarea_terminar(request, pk_t):
+    tarea = get_object_or_404(Tarea, pk=pk_t)
+    if tarea.completed_date != None:
+        if request.method == 'POST':
+            
+           pass
+        else:
+            return render(request, 'tareas/tarea_terminar.html')
+    
+    
+    return redirect('tarea_fina', pk=pk_t)

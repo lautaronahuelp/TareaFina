@@ -15,5 +15,11 @@
     </ol>
     {% if tarea.completed_date == None %}
     <a href="{% url 'act_agregar' tarea.pk %}"><i class="bi bi-plus-circle-fill"></i></a>
+    {% else %}
+        {% if tarea.sensation == None %}
+        <a href="">DEJA UNA SENSACION</a>
+        {% else %}
+        <p>SENSACION</p>
+        {% endif %}
     {% endif %}
 {% endblock %}
