@@ -54,7 +54,7 @@ class CategoriaForm(forms.ModelForm):
         model = Categoria
         fields = ('description', 'icon', 'icon_class', 'color',)
 
-class SensationForm(forms.ModelForm):
+class TerminarTareaForm(forms.ModelForm):
 
     class Meta:
         model = Tarea

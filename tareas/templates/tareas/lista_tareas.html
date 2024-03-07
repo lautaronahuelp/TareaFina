@@ -19,6 +19,9 @@
             {% endif %}
         {% endfor %}
     </select>
+    <div class="text-center">
+        <a href="{% url 'tarea_agregar' %}"><i class="h1 bi bi-plus-circle-fill"></i></a>
+    </div>
     {% for tarea in lista %}
     {% if not tarea.estaCompleta %}
         <a href="{% url 'tarea_fina' tarea.pk %}"><h3>{{ tarea.description }}<span class="badge bg-primary">{{ tarea.act_completas }}/{{ tarea.act_total }}</span></h3></a>
@@ -26,9 +29,6 @@
         <p>Deadline: {{ tarea.deadline_date }}</p>
     {% endif %}
     {% endfor %}
-    <div class="text-center">
-        <a href="{% url 'tarea_agregar' %}"><i class="h1 bi bi-plus-circle-fill"></i></a>
-    </div>
     </div>
     <div class="col">
     <h1>Tareas completas:</h1>

@@ -1,5 +1,11 @@
 {% extends 'tareas/base.html' %}
 
 {% block content %}
-    <p>TAREA TERMINAR</p>
+    <h1><a href="{% url 'tarea_fina' tarea.pk %}"><i class="bi bi-arrow-left-circle"></i></a>Terminaste la tarea: {{ tarea.description }}</h1>
+    <h2>Escribe tus sensaciones al respecto:</h2>
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Guardar">
+    </form>
 {% endblock %}

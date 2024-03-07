@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Tarea, Actividad, Categoria, Icono
-from .forms import ActividadForm, TareaForm, SelCategoriaForm, CategoriaForm
+from .forms import ActividadForm, TareaForm, SelCategoriaForm, CategoriaForm, TerminarTareaForm
 
 @login_required
 def lista_tareas(request, category = None):
@@ -32,8 +32,12 @@ def act_completa(request, pk_t, pk_a):
 
 @login_required
 def act_agregar(request, pk_t):
-    order = Actividad.objects.filter(meta = pk_t).count() + 1
     tarea = Tarea.objects.get(pk=pk_t)
+    if tarea.estaCompleta():
+        return redirect('tarea_fina', pk=tarea.pk)
+    
+    order = Actividad.objects.filter(meta = pk_t).count() + 1
+    
     if request.method == 'POST':
         form = ActividadForm(request.POST)
         if form.is_valid():
@@ -63,6 +67,10 @@ def tarea_agregar(request):
 @login_required
 def tarea_editar(request, pk):
     tarea = get_object_or_404(Tarea, pk=pk)
+
+    if tarea.estaCompleta():
+        return redirect('tarea_fina', pk=tarea.pk)
+    
     if request.method == 'POST':
         form = TareaForm(request.POST, instance = tarea)
         if form.is_valid():
@@ -76,6 +84,9 @@ def tarea_editar(request, pk):
 @login_required
 def tarea_agregar_cat(request, pk_t):
     tarea = get_object_or_404(Tarea, pk=pk_t)
+    if tarea.estaCompleta():
+        return redirect('tarea_fina', pk=tarea.pk)
+    
     if request.method == 'POST':
         form = SelCategoriaForm(request.POST, instance=tarea)
         form.fields['category'].queryset = Categoria.objects.filter(author = request.user) | Categoria.objects.filter(author = 1)
@@ -92,8 +103,14 @@ def tarea_crear_cat(request, pk_t):
     error_desc = ''
     error_icon = ''
     icon_selecc = ''
+
     tarea = get_object_or_404(Tarea, pk=pk_t)
+
+    if tarea.estaCompleta():
+        return redirect('tarea_fina', pk=tarea.pk)
+    
     iconos = Icono.objects.all()
+
     if request.method == 'POST':
         form = CategoriaForm(request.POST)
         norm_description = unicodedata.normalize("NFKD", request.POST['description']).encode("ascii","ignore").decode("ascii").lower()
@@ -129,12 +146,15 @@ def tarea_crear_cat(request, pk_t):
 @login_required
 def tarea_terminar(request, pk_t):
     tarea = get_object_or_404(Tarea, pk=pk_t)
-    if tarea.completed_date != None:
+    if tarea.estaCompleta() and not(tarea.haySensaciones()):
         if request.method == 'POST':
-            
-           pass
+            form = TerminarTareaForm(request.POST, instance=tarea)
+            if form.is_valid():
+                form.save()
+                return redirect('tarea_fina', pk=pk_t)
         else:
-            return render(request, 'tareas/tarea_terminar.html')
-    
-    
-    return redirect('tarea_fina', pk=pk_t)
+            form = TerminarTareaForm()
+
+        return render(request, 'tareas/tarea_terminar.html', { 'form': form, 'tarea': tarea,})
+     
+    return redirect('tarea_fina', pk=tarea.pk)

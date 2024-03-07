@@ -1,25 +1,31 @@
 {% extends 'tareas/base.html' %}
 
 {% block content %}
-    <h1><a href="{% url 'lista_tareas' %}"><i class="bi bi-arrow-left-circle"></i></a>{{ tarea.description }}<a href="{% url 'tarea_editar' tarea.pk %}"><i class="bi bi-pencil-square"></i></a></h1>
+    <h1>
+        <a href="{% url 'lista_tareas' %}"><i class="bi bi-arrow-left-circle"></i></a>{{ tarea.description }}
+        {% if not tarea.haySensaciones %}
+        <a href="{% url 'tarea_editar' tarea.pk %}"><i class="bi bi-pencil-square"></i></a>
+        {% endif %}
+    </h1>
     <p>Deadline: {{ tarea.deadline_date }}</p>
     <p>{{ tarea.act_completas }}/{{ tarea.act_total }} actividades completas.</p>
     <ol>
     {% for act in actividades %}
-    {% if act.completed_date == None %}
+    {% if not act.estaCompleta %}
         <li>{{ act.description }}<a href="{% url 'act_completa' tarea.pk act.pk %}"><i class="bi bi-check-square"></i></a></span><i class="bi bi-pencil-square"></i></li>
     {% else %}
         <li><del>{{ act.description }}</del>&#128513;</li>
     {% endif %}
     {% endfor %}
     </ol>
-    {% if tarea.completed_date == None %}
+    {% if not tarea.estaCompleta %}
     <a href="{% url 'act_agregar' tarea.pk %}"><i class="bi bi-plus-circle-fill"></i></a>
     {% else %}
-        {% if tarea.sensation == None %}
-        <a href="">DEJA UNA SENSACION</a>
+        {% if not tarea.haySensaciones %}
+        <a href="{% url 'tarea_terminar' tarea.pk %}">¿CUALES FUERON TUS SENSACIONES AL TERMINAR LA TAREA?</a>
         {% else %}
-        <p>SENSACION</p>
+        <h6>Tus sensaciones sobre esta tarea:</h6>
+        <p>{{ tarea.sensation }}</p>
         {% endif %}
     {% endif %}
 {% endblock %}

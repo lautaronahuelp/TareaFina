@@ -31,7 +31,7 @@ class Tarea(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.CharField(max_length=200)
     category = models.ForeignKey(Categoria, on_delete=models.CASCADE, null=True, default=None)
-    sensation = models.CharField(max_length=255, blank=True, null=True)
+    sensation = models.TextField(max_length=255, null=True)
     created_date = models.DateTimeField(default=timezone.now)
     deadline_date = models.DateTimeField(blank=True, null=True)
     completed_date = models.DateTimeField(blank=True, null=True)
@@ -55,6 +55,9 @@ class Tarea(models.Model):
     
     def estaCompleta(self):
         return self.completed_date != None
+    
+    def haySensaciones(self):
+        return self.sensation != None
 
 class Reaccion(models.Model):
     description = models.CharField(max_length=100)
@@ -75,13 +78,17 @@ class Actividad(models.Model):
         return self.description
     
     def completar(self, *args, **kwargs):
-        self.completed_date = timezone.now()
-        self.meta.completar_act()
-        super().save(*args, **kwargs)
+        if self.completed_date == None:
+            self.completed_date = timezone.now()
+            self.meta.completar_act()
+            super().save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         self.meta.agregar_act()
         super().save(*args, **kwargs)
+
+    def estaCompleta(self):
+        return self.completed_date != None
 
 
 
