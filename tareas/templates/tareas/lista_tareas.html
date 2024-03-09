@@ -18,6 +18,11 @@
                 <option value="{% url 'lista_tareas_xcat' categoria.normalized %}">{{ categoria.description }}</option>
             {% endif %}
         {% endfor %}
+        {% if cat_pk == -1  %}
+            <option value="{% url 'lista_tareas_xcat' sin_cat %}" selected>Sin categoría</option>
+        {% else %}
+            <option value="{% url 'lista_tareas_xcat' sin_cat %}">Sin categoría</option>
+        {% endif %}
     </select>
     <div class="text-center">
         <a href="{% url 'tarea_agregar' %}"><i class="h1 bi bi-plus-circle-fill"></i></a>

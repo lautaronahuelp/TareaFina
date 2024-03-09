@@ -8,15 +8,21 @@ from .forms import ActividadForm, TareaForm, SelCategoriaForm, CategoriaForm, Te
 @login_required
 def lista_tareas(request, category = None):
     list_category = Categoria.objects.filter(author = request.user) | Categoria.objects.filter(author = 1)
+    sin_cat = 'sin-categoria'
     if category:
-        category = unicodedata.normalize("NFKD", category).encode("ascii","ignore").decode("ascii").lower()
-        category = get_object_or_404(Categoria, normalized = category)
-        cat_pk = category.pk
-        lista = Tarea.objects.filter(author = request.user, category = category.pk).order_by('-created_date')
+        if category == sin_cat:
+            lista = Tarea.objects.filter(author = request.user, category = None).order_by('-created_date')
+            cat_pk = -1
+        else:
+            category = unicodedata.normalize("NFKD", category).encode("ascii","ignore").decode("ascii").lower()
+            category = get_object_or_404(Categoria, normalized = category)
+            cat_pk = category.pk
+            lista = Tarea.objects.filter(author = request.user, category = category.pk).order_by('-created_date')
     else:
         lista = Tarea.objects.filter(author = request.user).order_by('-created_date')
         cat_pk = 0
-    return render(request, 'tareas/lista_tareas.html', {'lista': lista, 'categorias': list_category, 'cat_pk':cat_pk})
+
+    return render(request, 'tareas/lista_tareas.html', {'lista': lista, 'categorias': list_category, 'cat_pk':cat_pk, 'sin_cat': sin_cat,})
 
 @login_required
 def tarea_fina(request, pk):
@@ -78,7 +84,7 @@ def tarea_editar(request, pk):
             return redirect('tarea_agregar_cat', pk_t=tarea.pk)
     else:
         form = TareaForm(instance = tarea)
-    return render(request, 'tareas/tarea_editar.html', {'form': form, 'tarea':tarea})
+    return render(request, 'tareas/tarea_editar.html', {'form': form, 'tarea': tarea,})
 
 
 @login_required
@@ -158,3 +164,7 @@ def tarea_terminar(request, pk_t):
         return render(request, 'tareas/tarea_terminar.html', { 'form': form, 'tarea': tarea,})
      
     return redirect('tarea_fina', pk=tarea.pk)
+#calificar una actividad: satisfaccion, estado de animo/humor, agotamiento
+#
+#
+#
